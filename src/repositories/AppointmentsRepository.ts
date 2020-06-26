@@ -8,6 +8,10 @@ class AppointmentsRepository {
     this.appointments = [];
   }
 
+  public all(): Appointment[] {
+    return this.appointments;
+  }
+
   public findByData(date: Date): Appointment | null {
     // Verifica se já existe o horário
     const findAppointment = this.appointments.find(appointment =>

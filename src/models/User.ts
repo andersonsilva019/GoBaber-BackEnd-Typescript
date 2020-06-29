@@ -12,6 +12,9 @@ class User {
   id: string;
 
   @Column() // defult 'varchar'
+  avatar: string;
+
+  @Column() // defult 'varchar'
   name: string;
 
   @Column()

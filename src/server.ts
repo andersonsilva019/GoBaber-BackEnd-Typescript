@@ -1,9 +1,9 @@
 import 'reflect-metadata';
 import express from 'express';
-import routes from './routes';
-import uploadConfig from './config/upload';
 import cors from 'cors';
-import './database';
+import routes from './shared/routes';
+import uploadConfig from './config/upload';
+import './shared/database';
 
 const app = express();
 app.use(cors());

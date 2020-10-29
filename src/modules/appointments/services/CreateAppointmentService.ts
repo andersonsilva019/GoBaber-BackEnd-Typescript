@@ -20,7 +20,7 @@ class CreateAppointmentService {
     const appointmentDate = startOfHour(date);
 
     /* Verificando se existe um appointment marcado */
-    const findAppointmentInSameDate = await appointmentsRepository.findByData(
+    const findAppointmentInSameDate = await appointmentsRepository.findByDate(
       appointmentDate,
     );
 
@@ -28,13 +28,10 @@ class CreateAppointmentService {
       throw new AppError('This appointment is already booked', 401);
     }
 
-    const appointment = appointmentsRepository.create({
+    const appointment = await appointmentsRepository.create({
       provider_id,
       date: appointmentDate,
     });
-
-    // Salvando o registro no banco de dados
-    await appointmentsRepository.save(appointment);
 
     return appointment;
   }

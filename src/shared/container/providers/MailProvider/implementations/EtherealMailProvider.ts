@@ -1,10 +1,17 @@
 import nodemailer, { Transporter } from 'nodemailer';
+import { injectable, inject } from 'tsyringe';
 import IMailProvider from '../models/IMailProvider';
+import ISendMailDTO from '../dtos/ISendMailDTO';
+import IMailTempleteProvider from '../../MailTemplateProvider/models/IMailTemplateProvider';
 
+@injectable()
 class FakerMailProvider implements IMailProvider {
   private client: Transporter;
 
-  constructor() {
+  constructor(
+    @inject('MailTemplateProvider')
+    private mailTemplateProvider: IMailTempleteProvider,
+  ) {
     nodemailer.createTestAccount().then(account => {
       const transporter = nodemailer.createTransport({
         host: account.smtp.host,
@@ -20,12 +27,23 @@ class FakerMailProvider implements IMailProvider {
     });
   }
 
-  public async sendMail(to: string, body: string): Promise<void> {
+  public async sendMail({
+    to,
+    from,
+    subject,
+    templateData,
+  }: ISendMailDTO): Promise<void> {
     const message = await this.client.sendMail({
-      from: 'Equipe Gobarber <equipe@gobarber.com>',
-      to,
-      subject: 'Recuperação de senha',
-      text: body,
+      from: {
+        name: from?.name || 'Equipe gobarber',
+        address: from?.email || 'equipe@gobarber.com',
+      },
+      to: {
+        name: to.name,
+        address: to.email,
+      },
+      subject,
+      html: await this.mailTemplateProvider.parse(templateData),
       // html: '<p><b>Hello</b> to myself!</p>',
     });
 
